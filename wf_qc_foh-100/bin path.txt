@@ -1,0 +1,200 @@
+﻿
+
+C# Winform获取bin目录的路径
+//获取到bin目录的下层路径：bin\Debug\
+
+            string aa = System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase;
+
+            string cc = System.AppDomain.CurrentDomain.BaseDirectory;
+
+            
+
+            //获取到bin目录：bin\Debug
+
+            string dd = System.Environment.CurrentDirectory;
+
+            string ee = System.IO.Directory.GetCurrentDirectory();
+
+            string ff = System.Windows.Forms.Application.StartupPath;
+
+ 
+
+            //获取程序.exe
+
+            string bb = System.Windows.Forms.Application.ExecutablePath;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+			gpon/epon:
+			
+			    //string result = string.Empty;
+                    if (IsDeviceConnected)
+                    {
+                        Byte[] output = new Byte[4096];
+                        String responseoutput = String.Empty;
+                        Byte[] cmd = System.Text.Encoding.ASCII.GetBytes(""); //"\n"
+                        stream.Write(cmd, 0, cmd.Length);
+
+                        Thread.Sleep(100);
+                        cmd = System.Text.Encoding.ASCII.GetBytes("get device info" + "\r\n");
+                        stream.Write(cmd, 0, cmd.Length);
+              
+                        Thread.Sleep(100);
+                        Int32 bytes = stream.Read(output, 0, output.Length);
+                        responseoutput = System.Text.Encoding.ASCII.GetString(output, 0, bytes);
+                        // rtbShowInfo.Text += responseoutput;
+                        //if (responseoutput.Contains("Unknown")){
+
+                        Regex objToMatch = new Regex("Login:");
+                        if (objToMatch.IsMatch(responseoutput))
+                        {
+                            cmd = System.Text.Encoding.ASCII.GetBytes(login + "\r\n");
+                            stream.Write(cmd, 0, cmd.Length);
+                        }
+                        Thread.Sleep(100);
+                        bytes = stream.Read(output, 0, output.Length);
+                        responseoutput = System.Text.Encoding.ASCII.GetString(output, 0, bytes);
+                        //  rtbShowInfo.Text += responseoutput;
+
+                        objToMatch = new Regex("Passwd:");
+                        if (objToMatch.IsMatch(responseoutput))
+                        {
+                            cmd = System.Text.Encoding.ASCII.GetBytes(password + "\r\n");
+                            stream.Write(cmd, 0, cmd.Length);
+                        }
+                        Thread.Sleep(100);
+                        bytes = stream.Read(output, 0, output.Length);
+                        responseoutput = System.Text.Encoding.ASCII.GetString(output, 0, bytes);
+                        // rtbShowInfo.Text += responseoutput;
+
+                        objToMatch = new Regex("-->");
+                        if (objToMatch.IsMatch(responseoutput))
+                        {
+                            cmd = System.Text.Encoding.ASCII.GetBytes("get device info" + "\r\n");
+                            stream.Write(cmd, 0, cmd.Length);
+                        }
+                        Thread.Sleep(100);
+                        bytes = stream.Read(output, 0, output.Length);
+                        responseoutput = System.Text.Encoding.ASCII.GetString(output, 0, bytes);
+                        rtbShowInfo.Text += responseoutput;
+
+                        //select info
+                        if(responseoutput.Contains("Pon Mode")){
+                            int start = responseoutput.IndexOf(":");
+                            int Modelength = "epon".Length;
+                            String ModeValnue = responseoutput.Substring(start + 2, Modelength).Trim();
+                            tbx_PonMode.Text = ModeValnue;
+                            
+                            int Maclength = "00-00-04-00-64-00".Length;
+                            String MacValnue = responseoutput.Substring(start + 59, Maclength).Trim();
+                            tBx_Mac.Text = MacValnue;
+
+                            int Softwarelength = "V2.2_19052201".Length;
+                            String SoftwareValnue = responseoutput.Substring(start + 98, Softwarelength).Trim();
+                            tBx_EponSoftware.Text = SoftwareValnue;
+
+                            int FPGAlength = "19031100".Length;
+                            String FPGAValnue = responseoutput.Substring(start + 135, FPGAlength).Trim();
+                            tBx_EponFPGA.Text = FPGAValnue;
+                        }
+
+                        //pon mode
+                        objToMatch = new Regex("-->");
+                        if (objToMatch.IsMatch(responseoutput))
+                        {
+                            if (tbx_PonMode.Text == "epon")
+                            {
+                                cmd = System.Text.Encoding.ASCII.GetBytes("set pon_mode gpon" + "\r\n");
+                                stream.Write(cmd, 0, cmd.Length);
+                            }
+                            else {
+                                cmd = System.Text.Encoding.ASCII.GetBytes("set pon_mode epon" + "\r\n");
+                                stream.Write(cmd, 0, cmd.Length);
+                            }
+                        }
+                        Thread.Sleep(10000);
+                        bytes = stream.Read(output, 0, output.Length);
+                        responseoutput = System.Text.Encoding.ASCII.GetString(output, 0, bytes);
+                        rtbShowInfo.Text += responseoutput;
+
+                        objToMatch = new Regex("-->");
+                        if (objToMatch.IsMatch(responseoutput))
+                        {
+                            cmd = System.Text.Encoding.ASCII.GetBytes("get device info" + "\r\n");
+                            stream.Write(cmd, 0, cmd.Length);
+                        }
+                        Thread.Sleep(100);
+                        bytes = stream.Read(output, 0, output.Length);
+                        responseoutput = System.Text.Encoding.ASCII.GetString(output, 0, bytes);
+                                             
+                        objToMatch = new Regex("Login:");
+                        if (objToMatch.IsMatch(responseoutput))
+                        {
+                            cmd = System.Text.Encoding.ASCII.GetBytes(login + "\r\n");
+                            stream.Write(cmd, 0, cmd.Length);
+                        }
+                        Thread.Sleep(100);
+                        bytes = stream.Read(output, 0, output.Length);
+                        responseoutput = System.Text.Encoding.ASCII.GetString(output, 0, bytes);
+                        //  rtbShowInfo.Text += responseoutput;
+
+                        objToMatch = new Regex("Passwd:");
+                        if (objToMatch.IsMatch(responseoutput))
+                        {
+                            cmd = System.Text.Encoding.ASCII.GetBytes(password + "\r\n");
+                            stream.Write(cmd, 0, cmd.Length);
+                        }
+                        Thread.Sleep(100);
+                        bytes = stream.Read(output, 0, output.Length);
+                        responseoutput = System.Text.Encoding.ASCII.GetString(output, 0, bytes);
+
+                        objToMatch = new Regex("-->");
+                        if (objToMatch.IsMatch(responseoutput))
+                        {
+                            cmd = System.Text.Encoding.ASCII.GetBytes("get device info" + "\r\n");
+                            stream.Write(cmd, 0, cmd.Length);
+                        }
+                        Thread.Sleep(100);
+                        bytes = stream.Read(output, 0, output.Length);
+                        responseoutput = System.Text.Encoding.ASCII.GetString(output, 0, bytes);
+                        rtbShowInfo.Text += responseoutput;
+
+                        if (responseoutput.Contains("Pon Mode"))
+                        {
+                            int start = responseoutput.IndexOf(":");                      
+                            int Softwarelength = "V2.2_19052201".Length;
+                            String SoftwareValnue = responseoutput.Substring(start + 98, Softwarelength).Trim();
+                            tBx_GponSoftware.Text = SoftwareValnue;
+
+                            int FPGAlength = "19031100".Length;
+                            String FPGAValnue = responseoutput.Substring(start + 135, FPGAlength).Trim();
+                            tBx_GponFPGA.Text = FPGAValnue;
+                        }
+
+                      
+                    }
+            }
+            catch (Exception ex)
+            {
+                ShowStatusBar(ex.Message, false);
+                //rtbShowInfo.Text += "Device has been connected, and connot be connected twice at one time!!";
+            }
+            this.Cursor = Cursors.Default;
+            Thread.Sleep(200);
+        }
